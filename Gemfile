@@ -2,6 +2,10 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.10'
 
+group :test do
+  gem 'rspec-rails', '>= 2.0.0.beta.10'
+end
+
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
