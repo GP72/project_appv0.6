@@ -7,8 +7,5 @@ namespace :db do
                          :password => "foobar",
                          :password_confirmation => "foobar")
     admin.toggle!(:admin)
-    .
-    .
-    .
   end
 end
