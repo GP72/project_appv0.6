@@ -2,9 +2,18 @@ class User < ActiveRecord::Base
  attr_accessor   :password
  attr_accessible :name, :email, :password, :password_confirmation
 
- has_many :microposts
+     has_many :microposts,	      :dependent => :destroy
+     has_many :relationships,         :foreign_key => "follower_id",
+                                      :class_name => "Relationship",
+                                      :dependent => :destroy
+     has_many :following, :through => :relationships, :source => :followed
 
- has_many :microposts, :dependent => :destroy
+
+     has_many :microposts,	      :dependent => :destroy
+     has_many :reverse_relationships, :foreign_key => "followed_id",
+                                      :class_name => "Relationship",
+                                      :dependent => :destroy
+     has_many :followers, :through => :reverse_relationships, :source => :follower
 
    email_regex = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
@@ -26,6 +35,18 @@ class User < ActiveRecord::Base
   def feed
     # This is preliminary. See Chapter 12 for the full implementation.
     Micropost.where("user_id = ?", id)
+  end
+  
+    def following?(followed)
+    relationships.find_by_followed_id(followed)
+  end
+
+  def follow!(followed)
+    relationships.create!(:followed_id => followed.id)
+  end
+
+  def unfollow!(followed)
+    relationships.find_by_followed_id(followed).destroy
   end
 
  def User.authenticate(email, submitted_password)
